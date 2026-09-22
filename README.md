@@ -1,20 +1,10 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
-</div>
+# Primeiro Aninho da Elizabeth
 
-# Run and deploy your AI Studio app
+Site de confirmação de presença para o aniversário de 1 aninho da Elizabeth.
 
-This contains everything you need to run your app locally.
+## Executar localmente
 
-View your app in AI Studio: https://ai.studio/apps/460813ab-cfa1-4c13-871e-81895c391edf
+**Pré-requisito:** Node.js
 
-## Run Locally
-
-**Prerequisites:**  Node.js
-
-
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+1. Instale as dependências: `npm install`
+2. Inicie o servidor: `npm run dev`

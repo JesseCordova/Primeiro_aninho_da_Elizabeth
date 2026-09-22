@@ -1,6 +1,5 @@
 {
   "name": "Primeiro Aninho da Elizabeth",
   "description": "Site para confirmação de presença no aniversário de 1 aninho da Elizabeth.",
-  "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+  "requestFramePermissions": []
 }
