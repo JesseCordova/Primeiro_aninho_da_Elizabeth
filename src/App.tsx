@@ -109,14 +109,13 @@ export default function App() {
   }, [guests, isGuestsLoaded]);
 
   const handleAddGuest = async (newGuest: GuestConfirmation) => {
+    if (!firebaseAuth.currentUser) {
+      throw new Error('Firebase authentication is not ready.');
+    }
+
+    await setDoc(doc(firestore, 'guests', newGuest.id), newGuest);
     setGuests((prev) => [newGuest, ...prev]);
     setCurrentConfirmation(newGuest);
-
-    try {
-      await setDoc(doc(firestore, 'guests', newGuest.id), newGuest);
-    } catch {
-      // Keep the local confirmation visible if the network is unavailable.
-    }
   };
 
   const handleDeleteGuest = async (id: string) => {

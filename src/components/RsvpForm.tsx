@@ -5,7 +5,7 @@ import { GuestConfirmation, PartyDetails } from '../types';
 
 interface RsvpFormProps {
   party: PartyDetails;
-  onSuccess: (confirmation: GuestConfirmation) => void;
+  onSuccess: (confirmation: GuestConfirmation) => Promise<void>;
 }
 
 export const RsvpForm: React.FC<RsvpFormProps> = ({ party, onSuccess }) => {
@@ -41,7 +41,7 @@ export const RsvpForm: React.FC<RsvpFormProps> = ({ party, onSuccess }) => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
 
@@ -74,10 +74,13 @@ export const RsvpForm: React.FC<RsvpFormProps> = ({ party, onSuccess }) => {
       triggerConfetti();
     }
 
-    setTimeout(() => {
+    try {
+      await onSuccess(newConfirmation);
       setIsSubmitting(false);
-      onSuccess(newConfirmation);
-    }, 400);
+    } catch {
+      setIsSubmitting(false);
+      setError('Não foi possível gravar sua confirmação. Tente novamente em instantes.');
+    }
   };
 
   return (
