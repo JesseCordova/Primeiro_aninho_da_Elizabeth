@@ -15,6 +15,7 @@ export const RsvpForm: React.FC<RsvpFormProps> = ({ party, onSuccess }) => {
   const [companionsNames, setCompanionsNames] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isNameShaking, setIsNameShaking] = useState(false);
 
   const handleIncrement = () => {
     if (companionsCount < 15) {
@@ -59,7 +60,8 @@ export const RsvpForm: React.FC<RsvpFormProps> = ({ party, onSuccess }) => {
     }
 
     if (trimmedName.split(' ').length < 2) {
-      setError('Nome e sobrenome');
+      setIsNameShaking(true);
+      window.setTimeout(() => setIsNameShaking(false), 350);
       return;
     }
 
@@ -170,7 +172,7 @@ export const RsvpForm: React.FC<RsvpFormProps> = ({ party, onSuccess }) => {
               }}
               placeholder="Ex: Maria Carolina Silva"
               required
-              className="w-full pl-11 pr-4 py-3 bg-[#FFF5F8]/60 border border-[#FBCFE8] focus:border-[#FF80BF] focus:bg-white focus:ring-3 focus:ring-[#FF80BF]/20 rounded-2xl text-sm text-[#5C3A48] placeholder-[#B58399] outline-none transition-all"
+              className={`w-full pl-11 pr-4 py-3 bg-[#FFF5F8]/60 border border-[#FBCFE8] focus:border-[#FF80BF] focus:bg-white focus:ring-3 focus:ring-[#FF80BF]/20 rounded-2xl text-sm text-[#5C3A48] placeholder-[#B58399] outline-none transition-all ${isNameShaking ? 'animate-name-shake border-[#E11D48]' : ''}`}
             />
           </div>
         </div>

@@ -1,1 +1,11 @@
 @import "tailwindcss";
+
+@keyframes name-shake {
+	0%, 100% { transform: translateX(0); }
+	25% { transform: translateX(-5px); }
+	75% { transform: translateX(5px); }
+}
+
+.animate-name-shake {
+	animation: name-shake 350ms ease-in-out;
+}
