@@ -1,5 +1,5 @@
 import React from 'react';
-import { CheckCircle2, Calendar, MessageCircle, RotateCcw, Heart, Users, Share2 } from 'lucide-react';
+import { CheckCircle2, RotateCcw, Heart, Users } from 'lucide-react';
 import { GuestConfirmation, PartyDetails } from '../types';
 
 interface SuccessStateProps {
@@ -14,52 +14,6 @@ export const SuccessState: React.FC<SuccessStateProps> = ({
   onReset,
 }) => {
   const totalPeople = confirmation.attending ? confirmation.companionsCount + 1 : 0;
-
-  // Format WhatsApp message
-  const createWhatsAppUrl = () => {
-    let text = '';
-    if (confirmation.attending) {
-      text = `Olá! Acabei de confirmar presença no aniversário da *${party.childName}*! 🎉\n\n`;
-      text += `*Nome:* ${confirmation.fullName}\n`;
-      text += `*Pessoas que vão acompanhar:* ${confirmation.companionsCount} acompanhante(s)\n`;
-      text += `*Total de pessoas:* ${totalPeople}\n`;
-      if (confirmation.companionsNames) {
-        text += `*Nomes:* ${confirmation.companionsNames}\n`;
-      }
-      text += `\nMal podemos esperar! 💕`;
-    } else {
-      text = `Olá! Infelizmente não poderei comparecer ao aniversário da *${party.childName}*, mas desejo uma festa linda e cheia de amor! 💖\n\n*Nome:* ${confirmation.fullName}`;
-    }
-
-    const cleanNumber = party.whatsappContact.replace(/\D/g, '');
-    return `https://wa.me/${cleanNumber}?text=${encodeURIComponent(text)}`;
-  };
-
-  const handleDownloadCalendar = () => {
-    // Generate simple .ics calendar file
-    const icsContent = [
-      'BEGIN:VCALENDAR',
-      'VERSION:2.0',
-      'PRODID:-//Aniversario Infantil//PT',
-      'BEGIN:VEVENT',
-      `SUMMARY:Aniversário da ${party.childName} (${party.age})`,
-      `DESCRIPTION:Comemoração do aniversário da ${party.childName}. Local: ${party.locationName} - ${party.address}`,
-      `LOCATION:${party.locationName}, ${party.address}`,
-      'STATUS:CONFIRMED',
-      'END:VEVENT',
-      'END:VCALENDAR',
-    ].join('\r\n');
-
-    const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
-    const url = window.URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.setAttribute('download', `aniversario_${party.childName.toLowerCase().replace(/\s+/g, '_')}.ics`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    window.URL.revokeObjectURL(url);
-  };
 
   return (
     <div className="w-full max-w-xl mx-auto bg-white/95 backdrop-blur-sm rounded-3xl p-6 sm:p-8 shadow-xl border border-[#FBCFE8] text-center">
@@ -116,32 +70,18 @@ export const SuccessState: React.FC<SuccessStateProps> = ({
         )}
       </div>
 
+      {confirmation.attending && (
+        <div className="p-4 rounded-2xl bg-[#FFF5F8] border border-[#FCE7F3] text-left mb-6">
+          <h3 className="text-sm font-bold uppercase tracking-wider text-[#9D174D] mb-2">Dicas para o presente e para a festa</h3>
+          <ol className="list-decimal list-inside space-y-2 text-xs leading-relaxed text-[#5C3A48]">
+            <li>Nossa Elizabeth está utilizando roupa tamanho 2, caso deseje presenteá-la com roupa.</li>
+            <li>Além do local onde será servida a comida, o espaço possui um vasto gramado onde as crianças poderão brincar. Sinta-se à vontade para levar roupas ou calçados confortáveis.</li>
+          </ol>
+        </div>
+      )}
+
       {/* Action Buttons */}
       <div className="space-y-3">
-        {/* Send to Organizer via WhatsApp */}
-        <a
-          id="btn-whatsapp-confirmation"
-          href={createWhatsAppUrl()}
-          target="_blank"
-          rel="noreferrer"
-          className="w-full py-3.5 px-5 rounded-2xl bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold text-sm shadow-sm transition-all flex items-center justify-center gap-2"
-        >
-          <MessageCircle className="w-4 h-4 fill-white" />
-          <span>Avisar no WhatsApp da Família</span>
-        </a>
-
-        {confirmation.attending && (
-          <button
-            id="btn-add-to-calendar"
-            type="button"
-            onClick={handleDownloadCalendar}
-            className="w-full py-3 px-5 rounded-2xl bg-[#FFE4EC] hover:bg-[#FFD6E0] text-[#9D174D] font-bold text-sm border border-[#FBCFE8] transition-all flex items-center justify-center gap-2"
-          >
-            <Calendar className="w-4 h-4 text-[#DB2777]" />
-            <span>Salvar na Minha Agenda (.ics)</span>
-          </button>
-        )}
-
         <button
           id="btn-reset-form"
           type="button"

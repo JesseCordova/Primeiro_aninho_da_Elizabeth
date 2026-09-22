@@ -1,5 +1,5 @@
 import React from 'react';
-import { Calendar, Clock, MapPin, Sparkles, Cake, Heart } from 'lucide-react';
+import { Calendar, Clock, MapPin, Sparkles, Cake, Heart, ExternalLink } from 'lucide-react';
 import { PartyDetails } from '../types';
 
 interface PartyHeaderProps {
@@ -67,12 +67,14 @@ export const PartyHeader: React.FC<PartyHeaderProps> = ({ party }) => {
             <p className="text-xs text-[#86405F] line-clamp-1 mt-0.5">{party.address}</p>
             {party.mapsUrl && (
               <a
+                id="btn-open-location"
                 href={party.mapsUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="text-[11px] text-[#DB2777] hover:underline font-medium inline-block mt-0.5"
+                className="mt-2 inline-flex items-center justify-center gap-1.5 rounded-xl bg-[#FFE4EC] px-3 py-2 text-[11px] font-bold text-[#9D174D] border border-[#FBCFE8] hover:bg-[#FFD6E0] transition-colors"
               >
-                Ver no mapa &rarr;
+                <ExternalLink className="w-3.5 h-3.5" />
+                Ver localização no mapa
               </a>
             )}
           </div>

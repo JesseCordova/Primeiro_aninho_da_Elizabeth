@@ -8,6 +8,7 @@ export const DEFAULT_PARTY_DETAILS: PartyDetails = {
   time: '16:00',
   locationName: 'Espaço Doce Encanto',
   address: 'Rua das Flores, 120 - Jardim Primavera',
+  mapsUrl: 'https://maps.app.goo.gl/sb6pMVo3LR8c2Duu6',
   whatsappContact: '5511999998888',
   rsvpDeadline: '18 de Outubro',
 };
