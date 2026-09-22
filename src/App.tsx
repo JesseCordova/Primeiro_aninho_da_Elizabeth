@@ -7,7 +7,8 @@ import { PasswordModal } from './components/PasswordModal';
 import { GuestConfirmation, PartyDetails } from './types';
 import { DEFAULT_PARTY_DETAILS, INITIAL_SAMPLE_GUESTS } from './data/defaultParty';
 import { Lock, Unlock } from 'lucide-react';
-import { firestore } from './firebase';
+import { firebaseAuth, firestore } from './firebase';
+import { onAuthStateChanged, signInAnonymously } from 'firebase/auth';
 import {
   collection,
   deleteDoc,
@@ -51,6 +52,7 @@ export default function App() {
   const [isHostOpen, setIsHostOpen] = useState(false);
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isFirebaseAuthenticated, setIsFirebaseAuthenticated] = useState(false);
   const [isGuestsLoaded, setIsGuestsLoaded] = useState(false);
 
   // Sync to local storage
@@ -63,6 +65,20 @@ export default function App() {
   }, [party]);
 
   useEffect(() => {
+    const unsubscribe = onAuthStateChanged(firebaseAuth, (user) => {
+      setIsFirebaseAuthenticated(Boolean(user));
+    });
+
+    signInAnonymously(firebaseAuth).catch(() => {
+      setIsFirebaseAuthenticated(false);
+    });
+
+    return unsubscribe;
+  }, []);
+
+  useEffect(() => {
+    if (!isFirebaseAuthenticated) return undefined;
+
     const unsubscribe = onSnapshot(
       collection(firestore, 'guests'),
       (snapshot) => {
@@ -80,7 +96,7 @@ export default function App() {
     );
 
     return unsubscribe;
-  }, []);
+  }, [isFirebaseAuthenticated]);
 
   useEffect(() => {
     if (!isGuestsLoaded) return;
