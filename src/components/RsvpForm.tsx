@@ -28,6 +28,13 @@ export const RsvpForm: React.FC<RsvpFormProps> = ({ party, onSuccess }) => {
     }
   };
 
+  const handleDecline = () => {
+    setAttending(false);
+    setCompanionsCount(0);
+    setCompanionsNames('');
+    setError(null);
+  };
+
   const triggerConfetti = () => {
     try {
       confetti({
@@ -65,9 +72,12 @@ export const RsvpForm: React.FC<RsvpFormProps> = ({ party, onSuccess }) => {
       fullName: trimmedName,
       attending,
       companionsCount: finalCompanions,
-      companionsNames: attending && finalCompanions > 0 ? companionsNames.trim() : undefined,
       createdAt: new Date().toISOString(),
     };
+
+    if (attending && finalCompanions > 0 && companionsNames.trim()) {
+      newConfirmation.companionsNames = companionsNames.trim();
+    }
 
     // Confetti on positive attendance
     if (attending) {
@@ -128,7 +138,7 @@ export const RsvpForm: React.FC<RsvpFormProps> = ({ party, onSuccess }) => {
             <button
               type="button"
               id="btn-attending-no"
-              onClick={() => setAttending(false)}
+              onClick={handleDecline}
               className={`flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border-2 font-semibold text-sm transition-all ${
                 !attending
                   ? 'border-[#FDA4AF] bg-[#FFF1F2] text-[#9F1239] shadow-xs'
