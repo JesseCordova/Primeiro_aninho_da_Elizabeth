@@ -7,6 +7,16 @@ import { PasswordModal } from './components/PasswordModal';
 import { GuestConfirmation, PartyDetails } from './types';
 import { DEFAULT_PARTY_DETAILS, INITIAL_SAMPLE_GUESTS } from './data/defaultParty';
 import { Lock, Unlock } from 'lucide-react';
+import { firestore } from './firebase';
+import {
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  onSnapshot,
+  setDoc,
+  writeBatch,
+} from 'firebase/firestore';
 
 const STORAGE_KEY_PARTY = 'child_party_details_v2';
 const STORAGE_KEY_GUESTS = 'child_party_guests_v1';
@@ -41,6 +51,7 @@ export default function App() {
   const [isHostOpen, setIsHostOpen] = useState(false);
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isGuestsLoaded, setIsGuestsLoaded] = useState(false);
 
   // Sync to local storage
   useEffect(() => {
@@ -52,25 +63,68 @@ export default function App() {
   }, [party]);
 
   useEffect(() => {
+    const unsubscribe = onSnapshot(
+      collection(firestore, 'guests'),
+      (snapshot) => {
+        const remoteGuests = snapshot.docs
+          .map((guestDocument) => guestDocument.data() as GuestConfirmation)
+          .sort((first, second) => second.createdAt.localeCompare(first.createdAt));
+
+        setGuests(remoteGuests);
+        setIsGuestsLoaded(true);
+        localStorage.setItem(STORAGE_KEY_GUESTS, JSON.stringify(remoteGuests));
+      },
+      () => {
+        setIsGuestsLoaded(true);
+      }
+    );
+
+    return unsubscribe;
+  }, []);
+
+  useEffect(() => {
+    if (!isGuestsLoaded) return;
+
     try {
       localStorage.setItem(STORAGE_KEY_GUESTS, JSON.stringify(guests));
     } catch {
       // ignore
     }
-  }, [guests]);
+  }, [guests, isGuestsLoaded]);
 
-  const handleAddGuest = (newGuest: GuestConfirmation) => {
+  const handleAddGuest = async (newGuest: GuestConfirmation) => {
     setGuests((prev) => [newGuest, ...prev]);
     setCurrentConfirmation(newGuest);
+
+    try {
+      await setDoc(doc(firestore, 'guests', newGuest.id), newGuest);
+    } catch {
+      // Keep the local confirmation visible if the network is unavailable.
+    }
   };
 
-  const handleDeleteGuest = (id: string) => {
+  const handleDeleteGuest = async (id: string) => {
     setGuests((prev) => prev.filter((g) => g.id !== id));
+
+    try {
+      await deleteDoc(doc(firestore, 'guests', id));
+    } catch {
+      // The realtime listener will restore the remote record if deletion fails.
+    }
   };
 
-  const handleClearAllGuests = () => {
+  const handleClearAllGuests = async () => {
     if (window.confirm('Tem certeza que deseja limpar toda a lista de convidados?')) {
       setGuests([]);
+
+      try {
+        const snapshot = await getDocs(collection(firestore, 'guests'));
+        const batch = writeBatch(firestore);
+        snapshot.docs.forEach((guestDocument) => batch.delete(guestDocument.ref));
+        await batch.commit();
+      } catch {
+        // The realtime listener will restore the remote records if clearing fails.
+      }
     }
   };
 
