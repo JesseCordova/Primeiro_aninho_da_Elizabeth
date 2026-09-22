@@ -59,7 +59,7 @@ export const RsvpForm: React.FC<RsvpFormProps> = ({ party, onSuccess }) => {
     }
 
     if (trimmedName.split(' ').length < 2) {
-      setError('Por favor, digite seu nome e sobrenome completo.');
+      setError('Nome e sobrenome');
       return;
     }
 
