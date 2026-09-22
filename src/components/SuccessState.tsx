@@ -72,7 +72,7 @@ export const SuccessState: React.FC<SuccessStateProps> = ({
 
       {confirmation.attending && (
         <div className="p-4 rounded-2xl bg-[#FFF5F8] border border-[#FCE7F3] text-left mb-6">
-          <h3 className="text-sm font-bold uppercase tracking-wider text-[#9D174D] mb-2">Dicas para o presente e para a festa</h3>
+          <h3 className="text-sm font-bold uppercase tracking-wider text-[#9D174D] mb-2">Dicas</h3>
           <ol className="list-decimal list-inside space-y-2 text-xs leading-relaxed text-[#5C3A48]">
             <li>Nossa Elizabeth está utilizando roupa tamanho 2, caso deseje presenteá-la com roupa.</li>
             <li>Além do local onde será servida a comida, o espaço possui um vasto gramado onde as crianças poderão brincar. Sinta-se à vontade para levar roupas ou calçados confortáveis.</li>
