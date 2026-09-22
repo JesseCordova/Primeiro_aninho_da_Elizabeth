@@ -29,7 +29,7 @@ export default function App() {
       if (saved) {
         const parsed = JSON.parse(saved);
         if (parsed.themeTitle && parsed.themeTitle !== 'Um Dia Mágico e Doce') {
-          return parsed;
+          return { ...DEFAULT_PARTY_DETAILS, ...parsed };
         }
       }
     } catch {
