@@ -28,17 +28,19 @@ export const PartyHeader: React.FC<PartyHeaderProps> = ({ party }) => {
       </div>
 
       {/* Title: 'Primeiro aninho da' smaller on top, 'Elizabeth' prominently highlighted */}
-      <div className="mb-4">
-        <span className="block text-base sm:text-lg md:text-xl font-bold text-[#9D174D] font-['Fredoka',sans-serif] tracking-wider uppercase mb-0.5">
-          Primeiro aninho da
-        </span>
-        <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold text-[#831843] font-['Dancing_Script',cursive] tracking-wide leading-tight drop-shadow-2xs">
-          Elizabeth
-        </h1>
+      <div className="mb-4 flex items-center justify-center gap-3 sm:gap-5">
+        <div>
+          <span className="block text-base sm:text-lg md:text-xl font-bold text-[#9D174D] font-['Fredoka',sans-serif] tracking-wider uppercase mb-0.5">
+            Primeiro aninho da
+          </span>
+          <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold text-[#831843] font-['Dancing_Script',cursive] tracking-wide leading-tight drop-shadow-2xs">
+            Elizabeth
+          </h1>
+        </div>
         <img
           src={childPhoto}
           alt="Elizabeth"
-          className="mx-auto mt-3 h-64 w-auto max-w-full object-contain opacity-90 drop-shadow-sm"
+          className="h-32 sm:h-40 md:h-48 w-auto max-w-[38%] object-contain opacity-90 drop-shadow-sm"
         />
       </div>
 
