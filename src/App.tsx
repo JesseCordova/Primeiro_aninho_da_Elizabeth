@@ -79,6 +79,19 @@ export default function App() {
   useEffect(() => {
     if (!isFirebaseAuthenticated) return undefined;
 
+    const partyReference = doc(firestore, 'settings', 'party');
+    const unsubscribeParty = onSnapshot(partyReference, (snapshot) => {
+      if (snapshot.exists()) {
+        const remoteParty = snapshot.data() as PartyDetails;
+        setParty({ ...DEFAULT_PARTY_DETAILS, ...remoteParty });
+        return;
+      }
+
+      setDoc(partyReference, party).catch(() => {
+        // Keep the local configuration if the initial migration fails.
+      });
+    });
+
     const unsubscribe = onSnapshot(
       collection(firestore, 'guests'),
       (snapshot) => {
@@ -95,7 +108,10 @@ export default function App() {
       }
     );
 
-    return unsubscribe;
+    return () => {
+      unsubscribeParty();
+      unsubscribe();
+    };
   }, [isFirebaseAuthenticated]);
 
   useEffect(() => {
@@ -141,6 +157,15 @@ export default function App() {
         // The realtime listener will restore the remote records if clearing fails.
       }
     }
+  };
+
+  const handleSaveParty = async (updatedParty: PartyDetails) => {
+    if (!firebaseAuth.currentUser) {
+      throw new Error('Firebase authentication is not ready.');
+    }
+
+    await setDoc(doc(firestore, 'settings', 'party'), updatedParty);
+    setParty(updatedParty);
   };
 
   const handleOpenHost = () => {
@@ -236,7 +261,7 @@ export default function App() {
         onLock={handleLockHost}
         guests={guests}
         party={party}
-        onSaveParty={(updated) => setParty(updated)}
+        onSaveParty={handleSaveParty}
         onDeleteGuest={handleDeleteGuest}
         onClearAll={handleClearAllGuests}
       />

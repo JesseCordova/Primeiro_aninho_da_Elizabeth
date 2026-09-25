@@ -25,7 +25,7 @@ interface HostDrawerProps {
   onLock?: () => void;
   guests: GuestConfirmation[];
   party: PartyDetails;
-  onSaveParty: (updated: PartyDetails) => void;
+  onSaveParty: (updated: PartyDetails) => Promise<void>;
   onDeleteGuest: (id: string) => void;
   onClearAll: () => void;
 }
@@ -138,11 +138,15 @@ export const HostDrawer: React.FC<HostDrawerProps> = ({
     URL.revokeObjectURL(url);
   };
 
-  const handleSavePartyForm = (e: React.FormEvent) => {
+  const handleSavePartyForm = async (e: React.FormEvent) => {
     e.preventDefault();
-    onSaveParty(formData);
-    setPartySavedFeedback(true);
-    setTimeout(() => setPartySavedFeedback(false), 2500);
+    try {
+      await onSaveParty(formData);
+      setPartySavedFeedback(true);
+      setTimeout(() => setPartySavedFeedback(false), 2500);
+    } catch {
+      setPartySavedFeedback(false);
+    }
   };
 
   return (
