@@ -1,6 +1,7 @@
 import React from 'react';
 import { Calendar, Clock, MapPin, Sparkles, Cake, Heart, ExternalLink } from 'lucide-react';
 import { PartyDetails } from '../types';
+import childPhoto from '../../imagem/Gemini_Generated_Image_38q8gc38q8gc38q8.jpeg';
 
 interface PartyHeaderProps {
   party: PartyDetails;
@@ -34,6 +35,11 @@ export const PartyHeader: React.FC<PartyHeaderProps> = ({ party }) => {
         <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold text-[#831843] font-['Dancing_Script',cursive] tracking-wide leading-tight drop-shadow-2xs">
           Elizabeth
         </h1>
+        <img
+          src={childPhoto}
+          alt="Elizabeth"
+          className="mx-auto mt-3 h-64 w-auto max-w-full object-contain opacity-90 drop-shadow-sm"
+        />
       </div>
 
       <p className="text-[#86405F] text-sm sm:text-base max-w-md mx-auto mb-6">
