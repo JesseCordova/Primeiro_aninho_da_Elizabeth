@@ -80,17 +80,23 @@ export default function App() {
     if (!isFirebaseAuthenticated) return undefined;
 
     const partyReference = doc(firestore, 'settings', 'party');
-    const unsubscribeParty = onSnapshot(partyReference, (snapshot) => {
-      if (snapshot.exists()) {
-        const remoteParty = snapshot.data() as PartyDetails;
-        setParty({ ...DEFAULT_PARTY_DETAILS, ...remoteParty });
-        return;
-      }
+    const unsubscribeParty = onSnapshot(
+      partyReference,
+      (snapshot) => {
+        if (snapshot.exists()) {
+          const remoteParty = snapshot.data() as PartyDetails;
+          setParty({ ...DEFAULT_PARTY_DETAILS, ...remoteParty });
+          return;
+        }
 
-      setDoc(partyReference, party).catch(() => {
-        // Keep the local configuration if the initial migration fails.
-      });
-    });
+        setDoc(partyReference, party).catch(() => {
+          // Keep the local configuration if the initial migration fails.
+        });
+      },
+      () => {
+        // The save action reports permission and network errors to the host.
+      }
+    );
 
     const unsubscribe = onSnapshot(
       collection(firestore, 'guests'),

@@ -44,6 +44,7 @@ export const HostDrawer: React.FC<HostDrawerProps> = ({
   const [filter, setFilter] = useState<'all' | 'attending' | 'declined'>('all');
   const [copied, setCopied] = useState(false);
   const [partySavedFeedback, setPartySavedFeedback] = useState(false);
+  const [partySaveError, setPartySaveError] = useState(false);
 
   // Editable party state
   const [formData, setFormData] = useState<PartyDetails>(party);
@@ -140,12 +141,14 @@ export const HostDrawer: React.FC<HostDrawerProps> = ({
 
   const handleSavePartyForm = async (e: React.FormEvent) => {
     e.preventDefault();
+    setPartySaveError(false);
     try {
       await onSaveParty(formData);
       setPartySavedFeedback(true);
       setTimeout(() => setPartySavedFeedback(false), 2500);
     } catch {
       setPartySavedFeedback(false);
+      setPartySaveError(true);
     }
   };
 
@@ -424,6 +427,12 @@ export const HostDrawer: React.FC<HostDrawerProps> = ({
               <div className="p-3 rounded-2xl bg-[#DCFCE7] border border-[#BBF7D0] text-[#15803D] text-xs font-bold flex items-center gap-2 animate-in fade-in">
                 <Check className="w-4 h-4" />
                 <span>Dados da festa atualizados com sucesso!</span>
+              </div>
+            )}
+
+            {partySaveError && (
+              <div className="p-3 rounded-2xl bg-[#FFF1F2] border border-[#FECDD3] text-[#9F1239] text-xs font-bold">
+                Não foi possível salvar. Verifique se a regra do Firestore permite acesso a settings/party para usuários autenticados.
               </div>
             )}
 
